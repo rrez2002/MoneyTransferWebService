@@ -1,6 +1,8 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Api\Auth\AuthController;
+use App\Http\Controllers\Api\BankInformationController;
+use App\Http\Controllers\Api\TransactionController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,6 +16,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::controller(AuthController::class)
+    ->prefix('auth')
+    ->name('auth.')
+    ->group(function () {
+        Route::post('register', 'register')->name('register');
+        Route::post('login', 'login')->name('login');
+        Route::post('logout', 'logout')->name('logout');
+        Route::post('refresh', 'refresh')->name('refresh');
+    });
+
+Route::apiResource('bank_info', BankInformationController::class)->except(['update']);
+Route::apiResource('transaction', TransactionController::class)->except(['update', 'destroy']);
